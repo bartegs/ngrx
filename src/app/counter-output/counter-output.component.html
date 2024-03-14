@@ -1,2 +1,4 @@
-<p class="counter">{{ counter }}</p>
-<p class="counter">Double: {{ counter * 2 }}</p>
+<div *ngIf="count$ | async as count">
+  <p class="counter">{{ count }}</p>
+  <p class="counter">Double: {{ count * 2 }}</p>
+</div>
