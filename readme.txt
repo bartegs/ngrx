@@ -96,3 +96,22 @@ dispatch action
   increment() {
     this.store.dispatch(increment());
   }
+
+236 - attach data to actions
+
+>>counter.actions.ts
+export const increment = createAction(
+  '[Counter] Increment',
+  props<{ value: number }>()
+);
+
+>>counter.reducer.ts
+export const counterReducer = createReducer(
+  initialState,
+  on(increment, (state, action) => state + action.value)
+);
+
+>>counter-controls.component.ts
+  increment() {
+    this.store.dispatch(increment({ value: 2 }));
+  }
