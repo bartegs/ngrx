@@ -115,3 +115,31 @@ export const counterReducer = createReducer(
   increment() {
     this.store.dispatch(increment({ value: 2 }));
   }
+
+237 - handling actions without createReducer (old syntax)
+
+>>counter.reducer.ts
+
+export function counterReducer(state = initialState, action: CounterActions | Action) {
+  if (action.type === INCREMENT) {
+    return state + action!.value;
+  }
+  return state;
+}
+
+>>counter.actions.ts
+
+const INCREMENT = "[Counter] Increment";
+
+export class IncrementAction implements Action {
+  readonly type = INCREMENT;
+
+  constructor(public value: number) {}
+}
+
+export type Counter Actions = IncrementAction | DecrementAction;
+
+>>counter-controls.component.ts
+increment() {
+  this.store.dispatch(new IncrementAction(2));
+}
