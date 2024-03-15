@@ -246,3 +246,39 @@ export class CounterEffects {
     { dispatch: false } // inform that this effect doesn't dispatch  another action
   );
 }
+
+243 - effect that uses localStorage to load initial data
+
+>>app.component.ts - here the action is dispatched
+  constructor(private store: Store) {}
+
+  ngOnInit(): void {
+    this.store.dispatch(init());
+  }
+
+>>counter.actions.ts
+export const init = createAction("[Counter] Init");
+
+export const set = createAction("[Counter] Set", props<{ value: number }>());
+
+>counter.reducer.ts - we determine how action modifies the state. Init action is not here, because it doesn't modify the state
+export const counterReducer = createReducer(
+  initialState,
+  on(increment, (state, action) => state + action.value),
+  on(decrement, (state, action) => state - action.value),
+  on(set, (state, action) => action.value)
+);
+
+>counter.effects.ts
+  public loadCount = createEffect(() =>
+    this.actions$.pipe(
+      ofType(init), // on init effect
+      switchMap(() => { // we switch to pipeline
+        const storedCounter = localStorage.getItem("count");
+        if (storedCounter) {
+          return of(set({ value: +storedCounter })); // trigger set action, we add of to make it an observable
+        }
+        return of(set({ value: 0 }));
+      })
+    )
+  );
