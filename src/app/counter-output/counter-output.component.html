@@ -1,11 +1,2 @@
-<div *ngIf="count$ | async as count; else zero">
-  <p class="counter">{{ count }}</p>
-  <p class="counter">Double: {{ count * 2 }}</p>
-</div>
-
-<ng-template #zero>
-  <div>
-    <p class="counter">0</p>
-    <p class="counter">Double: 0</p>
-  </div>
-</ng-template>
+<p class="counter">{{ count$ | async }}</p>
+<p class="counter">Double: {{ doubleCount$ | async }}</p>

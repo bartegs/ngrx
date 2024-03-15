@@ -143,3 +143,22 @@ export type Counter Actions = IncrementAction | DecrementAction;
 increment() {
   this.store.dispatch(new IncrementAction(2));
 }
+
+238 - selectors.
+Use selectors to select desired parts of state
+
+>>counter.selectors.ts
+
+export const selectCount = (state: { counter: number }) => state.counter;
+export const selectDoubleCount = createSelector(
+  selectCount,
+  (state) => state * 2
+);
+
+
+>>counter-output.component.ts
+  
+constructor(private store: Store<{ counter: number }>) {
+  this.count$ = store.select(selectCount);
+  this.doubleCount$ = store.select(selectDoubleCount);
+}
