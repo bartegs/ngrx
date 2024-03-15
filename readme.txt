@@ -162,3 +162,62 @@ constructor(private store: Store<{ counter: number }>) {
   this.count$ = store.select(selectCount);
   this.doubleCount$ = store.select(selectDoubleCount);
 }
+
+239 - effects.
+
+Side effect - anything that's not directly related to an immediate UI update
+
+eg: http req, localStorage, log to console
+
+avoid effects in reducers, logic in reducers has to be synchronous, no console.logs
+should be focussed on state modifications
+
+This is what effects are for.
+
+setup:
+
+ng add @ngrx/effects
+
+240 - create effect
+
+>>counter.effects.ts
+
+@Injectable()
+export class CounterEffects {
+  constructor(private actions$: Actions) {}
+
+  public saveCount = createEffect(
+    () =>
+      this.actions$.pipe( // all actions
+        ofType(increment, decrement), // filter to specific actions
+        tap((action) => {
+          console.log(action);
+          localStorage.setItem("count", action.value.toString());
+        })
+      ),
+    { dispatch: false } // inform that this effect doesn't dispatch  another action
+  );
+}
+
+old syntax:
+
+@Injectable()
+export class CounterEffects {
+  @Effect({dispatch: false})
+  
+  constructor(private actions$: Actions) {}
+
+  public saveCount = 
+      this.actions$.pipe( // all actions
+        ofType(increment, decrement), // filter to specific actions
+        tap((action) => {
+          console.log(action);
+          localStorage.setItem("count", action.value.toString());
+        })
+      ),
+}
+
+241 - Register effect
+>>app.module.ts
+
+  EffectsModule.forRoot([CounterEffects]),
