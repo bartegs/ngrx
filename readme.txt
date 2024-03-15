@@ -221,3 +221,28 @@ export class CounterEffects {
 >>app.module.ts
 
   EffectsModule.forRoot([CounterEffects]),
+
+242 - using store data in effects
+
+@Injectable()
+export class CounterEffects {
+  constructor(
+    private actions$: Actions,
+    private store: Store<{ counter: number }>
+  ) {}
+
+  public saveCount = createEffect(
+    () =>
+      this.actions$.pipe(
+        // all actions
+        ofType(increment, decrement), // filter to specific actions
+        withLatestFrom(this.store.select(selectCount)), //combine action with store data
+        tap(([action, counter]) => { //destructure what we recieve - action and store data (counter)
+          console.log(action);
+          console.log("counter: " + counter);
+          localStorage.setItem("count", counter.toString());
+        })
+      ),
+    { dispatch: false } // inform that this effect doesn't dispatch  another action
+  );
+}
